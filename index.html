@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Designer Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 50%, #0a0a0f 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ============================================
+           电影级开场揭幕动画 - Cinematic Intro Reveal
+           ============================================ */
+
+        /* 预加载屏 */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), 
+                        backdrop-filter 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            backdrop-filter: blur(0px);
+            pointer-events: none;
+        }
+
+        /* 霓虹渐变光线 */
+        .preloader-line {
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff6b35, #8b5cf6, transparent);
+            background-size: 200% 100%;
+            animation: lineExpand 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+                       lineShimmer 2s linear infinite;
+            margin-bottom: 30px;
+        }
+
+        @keyframes lineExpand {
+            0% { width: 0; }
+            100% { width: 200px; }
+        }
+
+        @keyframes lineShimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* 闪烁文字 */
+        .preloader-text {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            animation: textPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 核心元素初始状态 */
+        nav, .hero-badge, .hero h1, .hero p, .hero-btn, 
+        .partners, .cards-section, .portfolio-section {
+            opacity: 0;
+            transform: translateY(40px);
+            filter: blur(15px);
+        }
+
+        /* 页面加载后的入场动画 */
+        body.loaded nav {
+            animation: revealElement 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.1s;
+        }
+
+        body.loaded .hero-badge {
+            animation: revealElement 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.25s;
+        }
+
+        body.loaded .hero h1 {
+            animation: revealElement 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.4s;
+        }
+
+        body.loaded .hero p {
+            animation: revealElement 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.55s;
+        }
+
+        body.loaded .hero-btn {
+            animation: revealElement 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.7s;
+        }
+
+        body.loaded .partners {
+            animation: revealElement 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.85s;
+        }
+
+        body.loaded .cards-section {
+            animation: revealElement 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 1s;
+        }
+
+        body.loaded .portfolio-section {
+            animation: revealElement 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 1.15s;
+        }
+
+        @keyframes revealElement {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+                filter: blur(15px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        /* 背景光效 */
+        .bg-orbs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #ff6b35 0%, transparent 70%);
+            top: -200px;
+            left: -150px;
+        }
+
+        .orb-2 {
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
+            top: 20%;
+            right: -250px;
+        }
+
+        .orb-3 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+            bottom: -100px;
+            left: 20%;
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(20, 20, 30, 0.85) 0%, rgba(20, 20, 30, 0.6) 60%, rgba(20, 20, 30, 0.3) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            flex: 1;
+        }
+
+        .nav-center {
+            display: flex;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ffffff;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 10px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 60px 60px;
+        }
+
+        /* 英雄区 */
+        .hero {
+            text-align: center;
+            padding: 100px 0 80px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        .hero-badge span {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .hero-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 16px 36px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 60px rgba(139, 92, 246, 0.5), 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 合作伙伴 */
+        .partners {
+            text-align: center;
+            padding: 40px 0 80px;
+        }
+
+        .partners-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .partner-logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .partner-logo:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* 卡片区域 */
+        .cards-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 100px;
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .card-left {
+            border-top: 2px solid rgba(255, 107, 53, 0.5);
+            box-shadow: -20px 0 60px rgba(255, 107, 53, 0.15);
+        }
+
+        .card-right {
+            border-top: 2px solid rgba(139, 92, 246, 0.5);
+            box-shadow: 20px 0 60px rgba(139, 92, 246, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .notification-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 107, 53, 0.1));
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        /* 项目卡片 */
+        .project-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .project-item:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .project-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+
+        .project-info p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .project-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 28px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border: none;
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        /* 会话卡片 */
+        .session-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .session-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .session-info h5 {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .session-info span {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .session-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #8b5cf6;
+            box-shadow: 0 0 10px #8b5cf6;
+        }
+
+        .model-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .model-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .model-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .model-text h5 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .model-text span {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .model-badge {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* 作品集区域 */
+        .portfolio-section {
+            margin-bottom: 100px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 60px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .portfolio-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.6), rgba(139, 92, 246, 0.6), transparent);
+        }
+
+        .portfolio-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(139, 92, 246, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+        }
+
+        .portfolio-item h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+
+        .portfolio-item p {
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .portfolio-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 14px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 80px 60px 60px;
+        }
+
+        .footer-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ff6b35, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.5);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .contact-cards {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 50px;
+            transition: all 0.4s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .contact-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .contact-card p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            nav {
+                padding: 20px 30px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .container {
+                padding: 100px 30px 40px;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .cards-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 15px 20px;
+            }
+            
+            .container {
+                padding: 80px 20px 30px;
+            }
+            
+            .hero {
+                padding: 60px 0 40px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .partners-logos {
+                gap: 30px;
+            }
+            
+            .project-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn-outline,
+            .btn-gradient {
+                width: 100%;
+                text-align: center;
+            }
+            
+            footer {
+                padding: 60px 20px 40px;
+            }
+            
+            .footer-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 预加载屏 -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-line"></div>
+        <div class="preloader-text">HONGJIE HJ</div>
+    </div>
+
+    <!-- 背景光效 -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="nav-left">
+            <div class="logo">HONGJIE HJ</div>
+        </div>
+        <div class="nav-center">
+            <ul class="nav-links">
+                <li><a href="#" class="active">首页</a></li>
+                <li><a href="#">作品</a></li>
+                <li><a href="#">工具</a></li>
+                <li><a href="#">关于我</a></li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <button class="btn-primary">Book a Demo</button>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        <!-- 英雄区 -->
+        <section class="hero">
+            <div class="hero-badge">
+                <span>🎨</span>
+                <span>UI / UX Design</span>
+            </div>
+            <h1>用设计驯服AI</h1>
+            <p>我是刘鸿界，正在探索视觉美学与人工智能的边界</p>
+            <button class="hero-btn">
+                Book a Demo
+            </button>
+        </section>
+
+        <!-- 合作伙伴 -->
+        <section class="partners">
+            <div class="partners-logos">
+                <span class="partner-logo">Opendoor</span>
+                <span class="partner-logo">DocuSign</span>
+                <span class="partner-logo">slack</span>
+                <span class="partner-logo">splunk></span>
+                <span class="partner-logo">ATLASSIAN</span>
+            </div>
+        </section>
+
+        <!-- 卡片区域 -->
+        <section class="cards-section">
+            <div class="glass-card card-left">
+                <div class="card-header">
+                    <h3>You have 3 new appointment</h3>
+                    <div class="notification-badge">🔔</div>
+                </div>
+                
+                <div class="project-item">
+                    <div class="project-avatar">👨</div>
+                    <div class="project-info">
+                        <h4>Wilson Rhiel Madsen</h4>
+                        <p>8:00 - 12:00 Am, in 10 min</p>
+                    </div>
+                    <div class="project-buttons">
+                        <button class="btn-outline">Prepare</button>
+                        <button class="btn-gradient">Start sessions</button>
+                    </div>
+                </div>
+
+                <div style="text-align: center; padding: 15px;">
+                    <span style="color: rgba(255,255,255,0.4); font-size: 0.9rem; padding: 10px 24px; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; display: inline-block;">Notes to complete</span>
+                </div>
+
+                <div class="project-item" style="margin-top: 20px;">
+                    <div class="project-avatar">👩</div>
+                    <div class="project-info">
+                        <h4>Zayn sharp</h4>
+                        <p>May 23, 2025</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="color: rgba(255,255,255,0.4);">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card card-right">
+                <div class="session-card">
+                    <div class="session-header">
+                        <div class="session-user">
+                            <div class="user-avatar">👨</div>
+                            <div class="session-info">
+                                <h5>Sessions</h5>
+                                <span>Session with peter</span>
+                            </div>
+                        </div>
+                        <div class="session-status">
+                            <div class="status-dot"></div>
+                            <span>Started 1min ago</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+                        <span>Data logging</span>
+                        <span>Last logged 3s ago</span>
+                    </div>
+
+                    <div class="model-card">
+                        <div class="model-info">
+                            <div class="model-icon">⚡</div>
+                            <div class="model-text">
+                                <h5>Model prompt</h5>
+                                <span>Engage with play items</span>
+                            </div>
+                        </div>
+                        <div class="model-badge">1s ago</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; align-items: center; margin: 20px 0;">
+                    <div style="width: 2px; height: 30px; background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3);"></div>
+                    <div style="width: 2px; height: 30px; background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));"></div>
+                </div>
+
+                <div class="session-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 0.85rem;">
+                        <span style="color: rgba(255,255,255,0.7);">Engage with play items</span>
+                        <span style="color: rgba(255,255,255,0.5);">Skill acquisition</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); padding: 12px 16px; border-radius: 12px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.2rem;">😊</span>
+                            <span style="font-size: 0.9rem;">Completed</span>
+                        </div>
+                        <span style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">10:35 am</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 作品集区域 -->
+        <section class="portfolio-section">
+            <h2 class="section-title">Selected Works</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-icon">🎨</div>
+                    <h3>Brand Identity</h3>
+                    <p>Complete brand identity design including logo, color palette, and visual guidelines.</p>
+                    <span class="portfolio-tag">Branding</span>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-icon">💻</div>
+                    <h3>Web Design</h3>
+                    <p>Modern and responsive website designs with focus on user experience.</p>
+                    <span class="portfolio-tag">UI/UX</span>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-icon">📱</div>
+                    <h3>Mobile App</h3>
+                    <p>Intuitive mobile application interfaces with smooth interactions.</p>
+                    <span class="portfolio-tag">Design</span>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-icon">🎬</div>
+                    <h3>Motion Design</h3>
+                    <p>Dynamic motion graphics and animations for digital products.</p>
+                    <span class="portfolio-tag">Motion</span>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-icon">🖼️</div>
+                    <h3>3D Rendering</h3>
+                    <p>High-quality 3D visualizations and product renderings.</p>
+                    <span class="portfolio-tag">3D</span>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-icon">✨</div>
+                    <h3>AIGC Projects</h3>
+                    <p>AI-generated content and creative experiments with cutting-edge tools.</p>
+                    <span class="portfolio-tag">AIGC</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <h2 class="footer-title">Let's Create Together</h2>
+        <p class="footer-text">Thank you for browsing my portfolio. Whether it's project collaborations, full-time opportunities, or simply design exchanges, I'm looking forward to getting in touch with you.</p>
+        
+        <div class="contact-cards">
+            <div class="contact-card">
+                <div class="icon">📧</div>
+                <h4>Email</h4>
+                <p>contact@design.com</p>
+            </div>
+            <div class="contact-card">
+                <div class="icon">💬</div>
+                <h4>WeChat</h4>
+                <p>Designer_HJ</p>
+            </div>
+            <div class="contact-card">
+                <div class="icon">🎨</div>
+                <h4>Portfolio</h4>
+                <p>View More Works</p>
+            </div>
+        </div>
+
+        <p class="copyright">© 2026 Creative Designer. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 平滑滚动效果
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 卡片悬停效果增强
+        const cards = document.querySelectorAll('.glass-card, .portfolio-item, .contact-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            });
+        });
+
+        // 导航栏滚动效果 - 始终显示，不隐藏
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            nav.style.transform = 'translateY(0)';
+        });
+
+        // 背景光效动画
+        const orbs = document.querySelectorAll('.orb');
+        orbs.forEach((orb, index) => {
+            let x = 0;
+            let y = 0;
+            let vx = (Math.random() - 0.5) * 0.5;
+            let vy = (Math.random() - 0.5) * 0.5;
+
+            function animate() {
+                x += vx;
+                y += vy;
+
+                if (Math.abs(x) > 50) vx *= -1;
+                if (Math.abs(y) > 50) vy *= -1;
+
+                orb.style.transform = `translate(${x}px, ${y}px)`;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        });
+
+        // 电影级开场揭幕动画
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            
+            // 1.5秒后隐藏预加载屏
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+                document.body.classList.add('loaded');
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
