@@ -24,61 +24,103 @@
            ============================================ */
 
         /* 预加载屏 */
+        /* 硬核科幻：AI 终端解码 + 空间裂变舱门 */
         .preloader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #0a0a0f;
             z-index: 9999;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1), 
-                        backdrop-filter 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            overflow: hidden;
         }
 
-        .preloader.hidden {
-            opacity: 0;
-            backdrop-filter: blur(0px);
-            pointer-events: none;
+        .preloader-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #000000;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 2;
         }
 
-        /* 霓虹渐变光线 */
-        .preloader-line {
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #ff6b35, #8b5cf6, transparent);
+        .preloader-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #000000;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 2;
+        }
+
+        .preloader-content {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preloader-text {
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+            margin-bottom: 40px;
+        }
+
+        .preloader-progress-container {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .preloader-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #8b5cf6, #ff6b35);
             background-size: 200% 100%;
-            animation: lineExpand 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-                       lineShimmer 2s linear infinite;
-            margin-bottom: 30px;
+            animation: progressShimmer 2s linear infinite;
+            border-radius: 2px;
         }
 
-        @keyframes lineExpand {
-            0% { width: 0; }
-            100% { width: 200px; }
-        }
-
-        @keyframes lineShimmer {
+        @keyframes progressShimmer {
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
         }
 
-        /* 闪烁文字 */
-        .preloader-text {
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 8px;
-            color: rgba(255, 255, 255, 0.6);
-            animation: textPulse 1.5s ease-in-out infinite;
+        .preloader-percentage {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
         }
 
-        @keyframes textPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
+        /* 舱门打开动画 */
+        .preloader.doors-open .preloader-top {
+            transform: translateY(-100%);
+        }
+
+        .preloader.doors-open .preloader-bottom {
+            transform: translateY(100%);
+        }
+
+        .preloader.doors-open .preloader-content {
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         /* 核心元素初始状态 */
@@ -197,8 +239,10 @@
             justify-content: space-between;
             align-items: center;
             background: linear-gradient(to bottom, rgba(20, 20, 30, 0.85) 0%, rgba(20, 20, 30, 0.6) 60%, rgba(20, 20, 30, 0.3) 100%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transform: translateZ(0);
+            will-change: transform, backdrop-filter;
         }
 
         .nav-left {
@@ -302,6 +346,8 @@
             padding: 8px 20px;
             border-radius: 20px;
             margin-bottom: 40px;
+            transform: translateZ(0);
+            will-change: transform, backdrop-filter;
         }
 
         .hero-badge span {
@@ -343,6 +389,8 @@
             font-weight: 600;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+            transform: translateZ(0);
+            will-change: transform, backdrop-filter;
         }
 
         .hero-btn:hover {
@@ -386,13 +434,15 @@
 
         .glass-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 32px;
             padding: 40px;
             position: relative;
             overflow: hidden;
             transition: all 0.4s ease;
+            transform: translateZ(0);
+            will-change: transform, backdrop-filter;
         }
 
         .glass-card:hover {
@@ -657,13 +707,15 @@
 
         .portfolio-item {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
             padding: 30px;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            transform: translateZ(0);
+            will-change: transform, backdrop-filter;
         }
 
         .portfolio-item:hover {
@@ -748,11 +800,13 @@
 
         .contact-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 40px 50px;
             transition: all 0.4s ease;
+            transform: translateZ(0);
+            will-change: transform, backdrop-filter;
         }
 
         .contact-card:hover {
@@ -866,8 +920,15 @@
 <body>
     <!-- 预加载屏 -->
     <div class="preloader" id="preloader">
-        <div class="preloader-line"></div>
-        <div class="preloader-text">HONGJIE HJ</div>
+        <div class="preloader-top"></div>
+        <div class="preloader-content">
+            <div class="preloader-text" id="preloader-text">HONGJIE HJ</div>
+            <div class="preloader-progress-container">
+                <div class="preloader-progress" id="preloader-progress"></div>
+            </div>
+            <div class="preloader-percentage" id="preloader-percentage">0%</div>
+        </div>
+        <div class="preloader-bottom"></div>
     </div>
 
     <!-- 背景光效 -->
@@ -1131,15 +1192,71 @@
             animate();
         });
 
-        // 电影级开场揭幕动画
+        // 硬核科幻：AI 终端解码 + 空间裂变舱门
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
+            const preloaderText = document.getElementById('preloader-text');
+            const preloaderProgress = document.getElementById('preloader-progress');
+            const preloaderPercentage = document.getElementById('preloader-percentage');
+            const targetText = 'HONGJIE HJ';
+            let progress = 0;
+            let decodedChars = 0;
             
-            // 1.5秒后隐藏预加载屏
-            setTimeout(() => {
-                preloader.classList.add('hidden');
-                document.body.classList.add('loaded');
-            }, 1500);
+            // 生成随机乱码
+            function generateRandomChar() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+';
+                return chars[Math.floor(Math.random() * chars.length)];
+            }
+            
+            // 更新解码文字
+            function updateDecodedText() {
+                let displayText = '';
+                for (let i = 0; i < targetText.length; i++) {
+                    if (i < decodedChars) {
+                        displayText += targetText[i];
+                    } else if (i === decodedChars && progress > 0) {
+                        // 正在解码的字符
+                        displayText += generateRandomChar();
+                    } else {
+                        // 未解码的字符
+                        displayText += generateRandomChar();
+                    }
+                }
+                preloaderText.textContent = displayText;
+            }
+            
+            // 主动画函数
+            function animate() {
+                progress += 0.5;
+                if (progress > 100) progress = 100;
+                
+                // 更新进度条
+                preloaderProgress.style.width = `${progress}%`;
+                preloaderPercentage.textContent = `${Math.floor(progress)}%`;
+                
+                // 更新解码文字
+                const newDecodedChars = Math.floor((progress / 100) * targetText.length);
+                if (newDecodedChars > decodedChars) {
+                    decodedChars = newDecodedChars;
+                }
+                updateDecodedText();
+                
+                if (progress < 100) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // 解码完成，停顿0.3秒后打开舱门
+                    setTimeout(() => {
+                        preloader.classList.add('doors-open');
+                        // 舱门动画完成后添加loaded类
+                        setTimeout(() => {
+                            document.body.classList.add('loaded');
+                        }, 800);
+                    }, 300);
+                }
+            }
+            
+            // 开始动画
+            animate();
         });
     </script>
 </body>
